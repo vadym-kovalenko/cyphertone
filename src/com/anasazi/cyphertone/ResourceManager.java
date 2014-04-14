@@ -2,16 +2,23 @@ package com.anasazi.cyphertone;
 
 import android.content.Context;
 import org.andengine.engine.Engine;
+import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 public class ResourceManager {
     private static ResourceManager ourInstance = new ResourceManager();
+    Engine engine;
+    Context context;
 
     //Buttons
     public ITextureRegion ra, ri, ga, gi, ya, yi, ba, bi;
     private BitmapTextureAtlas buttonAtlas;
+
+    //Main menu
+    public ITextureRegion buttonNewRegion;
+    private BitmapTextureAtlas menuAtlas;
 
     //Backgrounds
     public ITextureRegion backgroundRegion;
@@ -20,10 +27,16 @@ public class ResourceManager {
         return ourInstance;
     }
 
+    public ResourceManager initialize(Engine engine, Context context) {
+        this.engine = engine;
+        this.context = context;
+        return this;
+    }
+
     private ResourceManager() {
     }
 
-    public synchronized void loadTextures(Engine engine, Context context) {
+    public synchronized void loadGameTextures() {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         buttonAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 404, 48);
         ra = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, context, "red_active.png", 0, 0);
@@ -35,6 +48,13 @@ public class ResourceManager {
         ba = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, context, "blue_active.png", 0, 300);
         bi = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, context, "blue_inactive.png", 0, 350);
         buttonAtlas.load();
+    }
+
+    public synchronized void loadMenuTextures() {
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        menuAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 310, 200);
+        buttonNewRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuAtlas, context, "menu_new_game.png", 0, 0);
+        menuAtlas.load();
     }
 
     public synchronized void unloadTextures() {
