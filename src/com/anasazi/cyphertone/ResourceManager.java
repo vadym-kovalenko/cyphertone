@@ -6,7 +6,9 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
 public class ResourceManager {
@@ -16,7 +18,7 @@ public class ResourceManager {
     StartActivity activity;
 
     //Buttons
-    public ITextureRegion ra, ri, ga, gi, ya, yi, ba, bi;
+    public TiledTextureRegion red, green, blue, yellow;
     private BitmapTextureAtlas buttonAtlas;
 
     //Main menu
@@ -42,15 +44,11 @@ public class ResourceManager {
 
     public synchronized void loadGameTextures() {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        buttonAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 404, 48);
-        ra = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "red_active.png", 0, 0);
-        ri = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "red_inactive.png", 50, 0);
-        ga = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "green_active.png", 100, 0);
-        gi = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "green_inactive.png", 150, 0);
-        ya = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "yellow_active.png", 200, 0);
-        yi = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "yellow_inactive.png", 250, 0);
-        ba = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "blue_active.png", 300, 0);
-        bi = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttonAtlas, activity, "blue_inactive.png", 350, 0);
+        buttonAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 768, 96);
+        red = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(buttonAtlas, activity, "red.png", 0, 0, 2, 1);
+        green = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(buttonAtlas, activity, "green.png", 192, 0, 2, 1);
+        yellow = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(buttonAtlas, activity, "yellow.png", 384, 0, 2, 1);
+        blue = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(buttonAtlas, activity, "blue.png", 576, 0, 2, 1);
         buttonAtlas.load();
     }
 
@@ -63,14 +61,10 @@ public class ResourceManager {
 
     public synchronized void unloadGameTextures() {
         buttonAtlas.unload();
-        ra = null;
-        ri = null;
-        ga = null;
-        gi = null;
-        ya = null;
-        yi = null;
-        ba = null;
-        bi = null;
+        red = null;
+        green = null;
+        yellow = null;
+        blue = null;
     }
 
     public synchronized void unloadMenuTextures() {
