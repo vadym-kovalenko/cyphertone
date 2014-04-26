@@ -3,13 +3,17 @@ package com.anasazi.cyphertone;
 import android.content.Context;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.adt.color.Color;
 
 public class ResourceManager {
     private static ResourceManager ourInstance = new ResourceManager();
@@ -26,7 +30,10 @@ public class ResourceManager {
     private BitmapTextureAtlas menuAtlas;
 
     //Backgrounds
-    public ITextureRegion backgroundRegion;
+    public Font font;
+
+    //Fonts
+    BitmapTextureAtlas fontTextureAtlas;
 
     public static ResourceManager getInstance() {
         return ourInstance;
@@ -36,6 +43,11 @@ public class ResourceManager {
         this.engine = engine;
         this.activity = activity;
         this.camera = camera;
+        FontFactory.setAssetBasePath("fnt/");
+        final ITexture fontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        //font = FontFactory.createFromAsset(engine.getFontManager(), fontTexture, activity.getAssets(),"SaucerBB.ttf", 40, true, 0);
+        font = FontFactory.createFromAsset(engine.getFontManager(), engine.getTextureManager(), 256, 256, activity.getAssets(), "SaucerBB.ttf", 32f, true, org.andengine.util.adt.color.Color.WHITE_ABGR_PACKED_INT);
+        font.load();
         return this;
     }
 

@@ -14,16 +14,16 @@ public class ButtonEntity extends TiledSprite {
     GameScene gameScene;
     private boolean isPlaying;
     GameScene.ButtonType buttonType;
+    TimerHandler timerHandler;
 
     public ButtonEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager, GameScene.ButtonType buttonType) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
         this.buttonType = buttonType;
         setCurrentTileIndex(1);
-        gameScene = (GameScene) getParent();
     }
 
     public boolean onAreaTouched(TouchEvent touchEvent, float touchX, float touchY) {
-        if (touchEvent.isActionUp() && !isPlaying && !gameScene.isPlaying) {
+        if (touchEvent.isActionUp() && !gameScene.isPlaying) {
             play();
             gameScene.buttonPushed(ButtonEntity.this);
         }
@@ -32,13 +32,17 @@ public class ButtonEntity extends TiledSprite {
 
     public void play() {
         setCurrentTileIndex(0);
-        isPlaying = true;
-        registerUpdateHandler(new TimerHandler(1f, new ITimerCallback() {
+        if (isPlaying && timerHandler != null) {
+            unregisterUpdateHandler(timerHandler);
+        }
+        timerHandler = new TimerHandler(Constant.BUTTON_PLAY_DURATION, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 ButtonEntity.this.setCurrentTileIndex(1);
                 isPlaying = false;
             }
-        }));
+        });
+        isPlaying = true;
+        registerUpdateHandler(timerHandler);
     }
 }

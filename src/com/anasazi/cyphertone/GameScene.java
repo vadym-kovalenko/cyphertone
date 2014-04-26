@@ -8,8 +8,10 @@ import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
+import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
@@ -26,12 +28,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener {
     TimerHandler handler;
     private int checkedButton = -1;
     private int score;
+    Text scoreText;
 
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if (pSceneTouchEvent.isActionUp()) {
-            createNewQueue();
-            play();
+            if (!isPlaying) {
+                createNewQueue();
+                play();
+            }
         }
         return true;
     }
@@ -59,12 +64,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener {
         green.gameScene = this;
         yellow.gameScene = this;
         blue.gameScene = this;
+        scoreText = new Text(20, 720, resourceManager.font, "Score: 0123456789", new TextOptions(HorizontalAlign.LEFT), vertexBufferObjectManager);
+        scoreText.setAnchorCenter(0, 0);
+        scoreText.setText("Score: 0");
+        scoreText.setColor(0, 0, 0);
+        attachChild(scoreText);
         setOnSceneTouchListener(this);
     }
 
     @Override
     public void onBackKeyPressed() {
-        SceneManager.getInstance().createMenuScene(null);
+        SceneManager.getInstance().createMenuScene();
     }
 
     @Override
@@ -98,6 +108,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener {
             }
             if (checkedButton == playingQueue.size() - 1) {
                 score++;
+                updateScore(score);
                 checkedButton = -1;
                 addToQueue();
                 play();
@@ -116,12 +127,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener {
         score = 0;
         checkedButton = -1;
         addToQueue();
+        updateScore(0);
     }
 
     private void play() {
         isPlaying = true;
         final Iterator<ButtonEntity> i = playingQueue.iterator();
-        handler = new TimerHandler(1.5f, true, new ITimerCallback() {
+        handler = new TimerHandler(Constant.BUTTON_PLAY_DELAY, true, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 if (i.hasNext()) {
@@ -152,6 +164,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener {
                 playingQueue.add(blue);
                 break;
         }
+    }
+
+    private void updateScore(int score) {
+        scoreText.setText("Score: " + score);
     }
 
 }

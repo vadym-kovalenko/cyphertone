@@ -58,6 +58,10 @@ public class SceneManager {
         return currentSceneType;
     }
 
+    public void createMenuScene() {
+        createMenuScene(null);
+    }
+
     public void createMenuScene(IGameInterface.OnCreateSceneCallback callback) {
         ResourceManager.getInstance().loadMenuTextures();
         menuScene = new MainMenuScene();
